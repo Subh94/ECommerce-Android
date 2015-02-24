@@ -3,8 +3,8 @@
 declare -a targets
 
 targets=(
-"demo1"
 "demo2"
+"staging"
 )
 
 while true; do

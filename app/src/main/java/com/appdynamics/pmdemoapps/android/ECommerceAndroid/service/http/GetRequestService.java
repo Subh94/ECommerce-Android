@@ -29,6 +29,7 @@ public class GetRequestService extends AsyncTask<String, String, String>{
             Log.d(TAG, "Call to " + uri[0]);
             HttpGet get = new HttpGet(uri[0]);
         	get.addHeader("Cookie", GlobalDataProvider.getInstance().getSessionId());
+            Log.d(TAG, GlobalDataProvider.getInstance().getSessionId());
             get.addHeader("appdynamicssnapshotenabled","true");
             Instrumentation.startTimer("GetRequestService");
 

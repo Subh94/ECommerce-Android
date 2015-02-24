@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ import com.appdynamics.pmdemoapps.android.ECommerceAndroid.service.http.GetReque
  * interface.
  */
 public class ItemListFragment extends ListFragment {
+    private static final String TAG = ItemListFragment.class.getName();
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -193,6 +195,7 @@ public class ItemListFragment extends ListFragment {
 
         @Override
         protected void onPostExecute(String result) {
+            Log.d(TAG, result);
             super.onPostExecute(result);
             //Process the response and populate the list items
             ItemParser parser = new ItemParser();

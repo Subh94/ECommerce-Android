@@ -26,6 +26,8 @@ import com.appdynamics.eumagent.runtime.Instrumentation;
  * the user.
  */
 public class UserLoginTask extends AsyncTask<String, Void, Boolean> {
+    static final String TAG = UserLoginTask.class.getName();
+
 	@Override
 	protected void onCancelled() {
 		// TODO Auto-generated method stub
@@ -63,12 +65,13 @@ public class UserLoginTask extends AsyncTask<String, Void, Boolean> {
 
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(GlobalDataProvider.getInstance().getRestServiceUrl() +"user/login");
-		
+
 		 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		    nameValuePairs.add(new BasicNameValuePair("username", params[0]));
 		    nameValuePairs.add(new BasicNameValuePair("password", params[1]));
 		    try {
 				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                Log.d(TAG, httppost.getRequestLine().getUri());
 			
 				HttpResponse response = httpclient.execute(httppost);
 				if(response!=null && response.getEntity()!=null){
