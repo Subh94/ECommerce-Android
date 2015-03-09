@@ -3,6 +3,7 @@
 declare -a targets
 
 targets=(
+"demo1"
 "demo2"
 "staging"
 )
