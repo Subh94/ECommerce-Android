@@ -1,11 +1,10 @@
 buildscript {
     repositories {
         mavenCentral()
-        mavenLocal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
-        classpath 'com.appdynamics:appdynamics-gradle-plugin:2.0'
+        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.appdynamics:appdynamics-gradle-plugin:4.+'
     }
 }
 
@@ -14,7 +13,6 @@ apply plugin: 'adeum'
 
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
 android {
@@ -47,5 +45,5 @@ dependencies {
 }
 
 dependencies {
-    compile 'com.appdynamics:appdynamics-runtime:1.0'
+    compile 'com.appdynamics:appdynamics-runtime:4.+'
 }
