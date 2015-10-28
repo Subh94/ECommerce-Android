@@ -5,22 +5,24 @@ import com.appdynamics.pmdemoapps.android.ECommerceAndroid.ItemDetailActivity;
 import com.appdynamics.pmdemoapps.android.ECommerceAndroid.ItemListActivity;
 import com.appdynamics.pmdemoapps.android.ECommerceAndroid.LoginActivity;
 import com.appdynamics.pmdemoapps.android.ECommerceAndroid.R;
-import com.appdynamics.pmdemoapps.android.ECommerceAndroid.misc.UserPrefActivity;
 
 import com.robotium.solo.*;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.JsonReader;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 
 public class AcmeRobotiumCheckout extends ActivityInstrumentationTestCase2<EntryActivity> {
   	private Solo solo;
-
-    private static final String APP_URL = "http://54.203.82.235/appdynamicspilot/";
-    private static final String EUM_KEY = "DEMO-AAB-AUM";
-    private static final String EUM_URL = "http://54.244.95.83:9001";
+    private List<String> users = new ArrayList<>();
+    private List<String> passwords = new ArrayList<>();
 
   	public AcmeRobotiumCheckout() {
 		super(EntryActivity.class);
@@ -38,8 +40,45 @@ public class AcmeRobotiumCheckout extends ActivityInstrumentationTestCase2<Entry
         super.tearDown();
   	}
 
-    public void testRun() {
-        //changeSettings();
+    private List readJsonStream(InputStream in) throws IOException {
+        JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
+        try {
+            return readJsonArray(reader);
+        } finally {
+                reader.close();
+        }
+    }
+
+    private List readJsonArray(JsonReader reader) throws IOException {
+        List messages = new ArrayList();
+
+        reader.beginArray();
+        while (reader.hasNext()) {
+            readJson(reader);
+        }
+        reader.endArray();
+        return messages;
+    }
+
+    private void readJson(JsonReader reader) throws IOException {
+        reader.beginObject();
+        int index = 0;
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("email")) {
+                users.add(reader.nextString());
+            } else if (name.equals("password")) {
+                passwords.add(reader.nextString());
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+    }
+
+    public void testRun() throws IOException {
+        InputStream userFile = getInstrumentation().getContext().getResources().getAssets().open("users.json");
+        readJsonStream(userFile);
 
         doLogin();
         assertTrue("ItemListActivity not found", solo.waitForActivity(ItemListActivity.class));
@@ -51,7 +90,7 @@ public class AcmeRobotiumCheckout extends ActivityInstrumentationTestCase2<Entry
         }
         doCheckout();
 
-        //doLogout();
+        doLogout();
     }
 
     private ArrayList<Integer> shuffleItems(int min, int max) {
@@ -64,14 +103,16 @@ public class AcmeRobotiumCheckout extends ActivityInstrumentationTestCase2<Entry
     }
 
     private void doLogin () {
+        int theUser = randInt(0, users.size() - 1);
+
         solo.waitForActivity(EntryActivity.class, 2000);
         Timeout.setSmallTimeout(101011);
         solo.clearEditText((android.widget.EditText) solo.getView(R.id.username));
-        solo.enterText((android.widget.EditText) solo.getView(R.id.username), "test");
+        solo.enterText((android.widget.EditText) solo.getView(R.id.username), users.get(theUser));
 
         solo.clickOnView(solo.getView(R.id.password));
         solo.clearEditText((android.widget.EditText) solo.getView(R.id.password));
-        solo.enterText((android.widget.EditText) solo.getView(R.id.password), "appdynamics");
+        solo.enterText((android.widget.EditText) solo.getView(R.id.password), passwords.get(theUser));
 
         solo.clickOnView(solo.getView(com.appdynamics.pmdemoapps.android.ECommerceAndroid.R.id.sign_in_button));
     }
@@ -87,31 +128,6 @@ public class AcmeRobotiumCheckout extends ActivityInstrumentationTestCase2<Entry
         assertTrue("ItemDetailActivity not found", solo.waitForActivity(ItemDetailActivity.class));
         solo.clickOnView(solo.getView(R.id.add_to_cart_button));
         assertTrue("ItemListActivity not found", solo.waitForActivity(ItemListActivity.class));
-    }
-
-    private void changeSettings() {
-        solo.clickOnView(solo.getView(android.widget.ImageButton.class, 0));
-        solo.clickOnActionBarItem(R.id.action_settings);
-        assertTrue("UserPrefActivity not found!", solo.waitForActivity(UserPrefActivity.class));
-        solo.clickInList(1, 0);
-        solo.waitForDialogToOpen(5000);
-
-        solo.clearEditText((android.widget.EditText) solo.getView(android.R.id.edit));
-        solo.enterText((android.widget.EditText) solo.getView(android.R.id.edit), APP_URL);
-        solo.clickOnView(solo.getView(android.R.id.button1));
-        solo.clickInList(2, 0);
-        solo.waitForDialogToOpen(5000);
-
-        solo.clearEditText((android.widget.EditText) solo.getView(android.R.id.edit));
-        solo.enterText((android.widget.EditText) solo.getView(android.R.id.edit), EUM_KEY);
-        solo.clickOnView(solo.getView(android.R.id.button1));
-        solo.clickInList(3, 0);
-        solo.waitForDialogToOpen(5000);
-
-        solo.clearEditText((android.widget.EditText) solo.getView(android.R.id.edit));
-        solo.enterText((android.widget.EditText) solo.getView(android.R.id.edit), EUM_URL);
-        solo.clickOnView(solo.getView(android.R.id.button1));
-        solo.goBack();
     }
 
     private void doLogout() {

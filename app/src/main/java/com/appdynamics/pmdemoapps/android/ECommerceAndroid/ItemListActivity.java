@@ -83,7 +83,6 @@ public class ItemListActivity extends FragmentActivity implements
         final ActionBar actionBar = getActionBar();
         // Specify that tabs should be displayed in the action bar.
 	    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-	    //actionBar.setDisplayShowTitleEnabled(false);
 	    
 	    actionBar.addTab(
                 actionBar.newTab()
@@ -147,7 +146,6 @@ public class ItemListActivity extends FragmentActivity implements
 			//Bundle arguments = new Bundle();
 
 			ItemDetailFragment fragment = new ItemDetailFragment();
-			//fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.item_detail_container, fragment).commit();
 

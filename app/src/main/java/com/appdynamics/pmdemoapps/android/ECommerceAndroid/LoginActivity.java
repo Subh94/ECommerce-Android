@@ -49,7 +49,6 @@ public class LoginActivity extends Activity implements AsyncTaskListener {
 	private TextView mLoginStatusMessageView;
 	
 	private boolean exceptionOccurred;
-	//private String exceptionMessage;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +110,7 @@ public class LoginActivity extends Activity implements AsyncTaskListener {
 		// Reset errors.
 		mUserView.setError(null);
 		mPasswordView.setError(null);
+
 		// Store values at the time of the login attempt.
 		mUser = mUserView.getText().toString();
 		mPassword = mPasswordView.getText().toString();
@@ -237,6 +237,7 @@ public class LoginActivity extends Activity implements AsyncTaskListener {
         Instrumentation.stopTimer("Login");
 		if (success) {
             Instrumentation.leaveBreadcrumb("Login successful");
+
 			//Save the username/password in settings
 			SharedPreferences settings = getSharedPreferences(Constants.COMMON_PREFS_FILE_NAME, 0);
 		    SharedPreferences.Editor editor = settings.edit();
