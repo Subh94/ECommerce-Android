@@ -142,6 +142,8 @@ public class LoginActivity extends Activity implements AsyncTaskListener {
 			showProgress(true);
 			mAuthTask = new UserLoginTask(this);
 			mAuthTask.execute(mUser,mPassword);
+
+            Instrumentation.setUserData("User Email", mUser, true);
 		}
 	}
 
